@@ -1,6 +1,6 @@
 package com.mansoor.indexer
 
-import java.io.{FileOutputStream, File}
+import java.io.File
 import org.apache.lucene.util.Version
 import org.apache.lucene.analysis.standard.StandardAnalyzer
 import org.apache.lucene.store.SimpleFSDirectory
@@ -9,9 +9,7 @@ import org.apache.lucene.document.{Field, Document}
 import org.apache.lucene.document.Field.{TermVector, Index, Store}
 import org.apache.tika.Tika
 import collection.JavaConversions._
-import java.net.URL
-import org.apache.commons.compress.utils.IOUtils
-import org.eclipse.jgit.api.{CloneCommand, GitCommand}
+import grizzled.slf4j.Logger
 
 /**
  *
@@ -25,17 +23,17 @@ object SlideIndexer {
   final val SESSIONS = SLIDES_DIR + "/sessions"
   final val WORKSHOPS = SLIDES_DIR + "/unsessions"
   final val UNSESSIONS = SLIDES_DIR + "/workshops"
-  final val OUTPUT_DIR = System.getProperty("java.io.tmpdir")+"/lucene-index"
+  final val OUTPUT_DIR = System.getProperty("java.io.tmpdir") + "/lucene-index"
+  val logger = Logger("SlideIndexer")
 
   def main(args: Array[String]) {
     val slides = getSlides
     val outputDir = getOutputDir
-    index(slides,outputDir)
+    index(slides, outputDir)
   }
 
 
   def index(slides: List[File], outputDir: File) {
-
     val config = new IndexWriterConfig(Version.LUCENE_36, new StandardAnalyzer(Version.LUCENE_36, StopWords.stopwordSet))
     val indexWriter = new IndexWriter(new SimpleFSDirectory(outputDir), config)
     indexWriter.setMaxFieldLength(Integer.MAX_VALUE)
@@ -43,7 +41,7 @@ object SlideIndexer {
 
     slides.foldLeft(indexWriter) {
       case (writer, file) => val document = new Document
-      println("parsing " + file.getName)
+      logger.info("parsing " + file.getName)
       document.add(new Field("filename", file.getName, Store.YES, Index.ANALYZED, TermVector.YES))
       document.add(new Field("content", tika.parseToString(file), Store.NO, Index.ANALYZED, TermVector.YES))
       writer.addDocument(document)
@@ -54,6 +52,7 @@ object SlideIndexer {
   def getOutputDir = {
     val outputDir = new File(OUTPUT_DIR)
     if (outputDir.exists()) outputDir.delete()
+    logger.info("Creating index in [" + outputDir.getAbsolutePath + "]")
     outputDir
   }
 
