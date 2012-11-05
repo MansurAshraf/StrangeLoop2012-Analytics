@@ -8,7 +8,11 @@ object ProjectBuild extends Build {
 
   object Dependencies {
     val scalatest = "org.scalatest" %% "scalatest" % "1.8"
-    val tika = "org.apache.tika" % "tika-core" % "1.2"
+    val tikaCore = "org.apache.tika" % "tika-core" % "1.2"
+    val tikaParser = "org.apache.tika" % "tika-parsers" % "1.2"
+    val luceneCore= "org.apache.lucene" % "lucene-core" % "3.6.1"
+    val luceneAnalyzer="org.apache.lucene" % "lucene-analyzers" % "3.6.1"
+    val jgit="org.eclipse.jgit" % "org.eclipse.jgit" % "2.0.0.201206130900-r"
   }
 
   val params = Seq(
@@ -30,7 +34,7 @@ object ProjectBuild extends Build {
     id = "slides-indexer",
     base = file("slides-indexer"),
     settings = projectSettings ++ Seq(
-      libraryDependencies ++= Seq(tika)
+      libraryDependencies ++= Seq(tikaCore,tikaParser,luceneCore,luceneAnalyzer,jgit)
     )
   )
 

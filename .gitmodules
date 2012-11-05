@@ -1,0 +1,6 @@
+[submodule "slides-indexer/src/main/resources/slides/strangeloop2012"]
+	path = slides-indexer/src/main/resources/slides/strangeloop2012
+	url = https://github.com/strangeloop/strangeloop2012.git
+[submodule "slides-indexer/src/main/resources/strangeloop2012"]
+	path = slides-indexer/src/main/resources/strangeloop2012
+	url = https://github.com/strangeloop/strangeloop2012.git
